@@ -1,0 +1,7 @@
+{
+  "name": "BrgyAnnounce",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
