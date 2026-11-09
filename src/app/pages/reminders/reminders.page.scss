@@ -1,0 +1,27 @@
+.item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  background: #fff;
+  border-bottom: 1px solid #eceef2;
+}
+
+.info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  strong { font-size: 17px; }
+  span { color: var(--app-muted); font-size: 14px; margin-top: 2px; }
+}
+
+.cancel-btn {
+  background: none;
+  border: 0;
+  color: var(--brgy-red);
+  font-size: 16px;
+  font-weight: 600;
+  padding: 8px;
+}

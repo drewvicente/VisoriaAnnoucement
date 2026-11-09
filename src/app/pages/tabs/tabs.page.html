@@ -1,0 +1,20 @@
+<ion-tabs>
+  <ion-tab-bar slot="bottom">
+    <ion-tab-button tab="feed">
+      <ion-icon name="home"></ion-icon>
+      <ion-label>Feed</ion-label>
+    </ion-tab-button>
+
+    @if (auth.isAdmin()) {
+      <ion-tab-button tab="posts">
+        <ion-icon name="list"></ion-icon>
+        <ion-label>Posts</ion-label>
+      </ion-tab-button>
+    } @else {
+      <ion-tab-button tab="reminders">
+        <ion-icon name="notifications"></ion-icon>
+        <ion-label>Reminders</ion-label>
+      </ion-tab-button>
+    }
+  </ion-tab-bar>
+</ion-tabs>

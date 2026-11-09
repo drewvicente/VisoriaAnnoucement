@@ -1,0 +1,115 @@
+<ion-header class="ion-no-border">
+  <div class="top">
+    <div class="top-row">
+      <app-logo [size]="44" src="assets/logo.png"></app-logo>
+      <div class="title">
+        <strong>{{ config.shortName }}</strong>
+        <span>{{ config.location }}</span>
+      </div>
+
+      @if (auth.isAdmin()) {
+        <span class="admin-badge">Admin</span>
+        <button class="icon-btn" aria-label="Log out" (click)="logout()">
+          <ion-icon name="log-out-outline"></ion-icon>
+        </button>
+      } @else {
+        <button class="icon-btn" aria-label="Official login" routerLink="/login">
+          <ion-icon name="log-out-outline"></ion-icon>
+        </button>
+        <button class="icon-btn" aria-label="Reminders" routerLink="/reminders">
+          <ion-icon name="notifications-outline"></ion-icon>
+          @if (reminders.count() > 0) {
+            <span class="badge">{{ reminders.count() }}</span>
+          }
+        </button>
+      }
+    </div>
+
+    <div class="search">
+      <ion-icon name="search-outline"></ion-icon>
+      <input type="text" placeholder="Search notices" (input)="onSearch($event)" />
+    </div>
+  </div>
+</ion-header>
+
+<ion-content>
+  <div class="chips">
+    @for (tag of tags(); track tag) {
+      <button class="chip" [class.active]="tag === activeTag()" (click)="selectTag(tag)">
+        {{ tag }}
+      </button>
+    }
+  </div>
+
+  @if (importantNotice(); as imp) {
+    <div class="banner" [routerLink]="['/notice', imp.id]">
+      <ion-icon name="warning-outline"></ion-icon>
+      <div class="banner-text">
+        <small>{{ importantLabel(imp) }}</small>
+        <strong>{{ imp.title }}</strong>
+      </div>
+      <ion-icon name="chevron-forward"></ion-icon>
+    </div>
+  }
+
+  @for (n of filtered(); track n.id) {
+    <article class="card" [routerLink]="['/notice', n.id]">
+      <div class="card-head">
+        <app-logo [size]="38"></app-logo>
+        <div class="who">
+          <strong>
+            {{ config.fullName }}
+            <ion-icon name="checkmark-circle" class="verified"></ion-icon>
+          </strong>
+          <span>{{ n.postedAt | date: 'MMM d' }} · Public</span>
+        </div>
+        <span class="tag-pill">{{ n.tag }}</span>
+      </div>
+
+      <h2>{{ n.title }}</h2>
+      @if (n.body) {
+        <p>{{ n.body }}</p>
+      }
+
+      @if (n.eventDate) {
+        <div class="event-box">
+          <div class="cal">
+            <span class="cal-month">{{ n.eventDate | date: 'MMM' }}</span>
+            <span class="cal-day">{{ n.eventDate | date: 'd' }}</span>
+          </div>
+          <div class="event-info">
+            <strong>{{ n.eventDate | date: 'EEE, MMM d · h:mm a' }}</strong>
+            @if (n.location) {
+              <span>{{ n.location }}</span>
+            }
+          </div>
+          @if (!auth.isAdmin()) {
+            <button class="remind-chip" [class.on]="reminders.has(n.id)" (click)="remind(n, $event)">
+              <ion-icon name="notifications-outline"></ion-icon>
+              {{ reminders.has(n.id) ? 'Set' : 'Remind' }}
+            </button>
+          }
+        </div>
+      }
+    </article>
+  } @empty {
+    <div class="empty-state">
+      @if (searchTerm() || activeTag() !== 'All') {
+        No notices match your search.
+      } @else if (auth.isAdmin()) {
+        No notices yet.<br />Tap "New notice" to post the first one.
+      } @else {
+        No notices yet.<br />Check back soon for updates from the barangay.
+      }
+    </div>
+  }
+
+  @if (auth.isAdmin()) {
+    <ion-fab slot="fixed" vertical="bottom" horizontal="end">
+      <button class="fab-btn" routerLink="/new">
+        <ion-icon name="add"></ion-icon>
+        New notice
+      </button>
+    </ion-fab>
+  }
+</ion-content>

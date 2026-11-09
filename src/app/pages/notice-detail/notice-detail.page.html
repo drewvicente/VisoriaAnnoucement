@@ -1,0 +1,75 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar class="blue-toolbar">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/feed" text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title>Notice</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  @if (notice(); as n) {
+    <span class="tag-pill">{{ n.tag }}</span>
+    <h1>{{ n.title }}</h1>
+
+    <div class="who">
+      <app-logo [size]="44"></app-logo>
+      <div>
+        <strong>{{ config.fullName }}</strong>
+        <span>Posted {{ n.postedAt | date: 'MMM d' }}</span>
+      </div>
+    </div>
+
+    @if (n.body) {
+      <p class="body">{{ n.body }}</p>
+    }
+
+    @if (n.eventDate || n.location) {
+      <hr />
+    }
+
+    @if (n.eventDate) {
+      <div class="row">
+        <div class="icon-circle"><ion-icon name="calendar-outline"></ion-icon></div>
+        <div>
+          <small>Date and time</small>
+          <strong>{{ n.eventDate | date: 'EEE, MMM d, y · h:mm a' }}</strong>
+        </div>
+      </div>
+    }
+
+    @if (n.location) {
+      <div class="row">
+        <div class="icon-circle"><ion-icon name="location-outline"></ion-icon></div>
+        <div>
+          <small>Place</small>
+          <strong>{{ n.location }}</strong>
+        </div>
+      </div>
+    }
+  } @else {
+    <div class="empty-state">This notice no longer exists.</div>
+  }
+</ion-content>
+
+@if (notice(); as n) {
+  @if (auth.isAdmin()) {
+    <ion-footer class="ion-no-border">
+      <div class="footer-bar">
+        <button class="action-btn" [routerLink]="['/edit', n.id]">
+          <ion-icon name="pencil-outline"></ion-icon>
+          Edit notice
+        </button>
+      </div>
+    </ion-footer>
+  } @else if (n.eventDate) {
+    <ion-footer class="ion-no-border">
+      <div class="footer-bar">
+        <button class="action-btn" [class.outline]="reminders.has(n.id)" (click)="remind()">
+          <ion-icon name="notifications-outline"></ion-icon>
+          {{ reminders.has(n.id) ? 'Reminder set · tap to cancel' : 'Remind me 1 hour before' }}
+        </button>
+      </div>
+    </ion-footer>
+  }
+}

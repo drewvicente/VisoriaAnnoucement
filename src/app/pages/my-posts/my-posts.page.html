@@ -1,0 +1,45 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar class="blue-toolbar">
+    <ion-title>My posts</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <p class="hint">
+    {{ noticeService.sorted().length }}
+    {{ noticeService.sorted().length === 1 ? 'notice' : 'notices' }} · tap one to edit its details
+  </p>
+
+  @for (n of noticeService.sorted(); track n.id) {
+    <div class="item" [routerLink]="['/edit', n.id]">
+      @if (n.eventDate) {
+        <div class="cal">
+          <span class="cal-month">{{ n.eventDate | date: 'MMM' }}</span>
+          <span class="cal-day">{{ n.eventDate | date: 'dd' }}</span>
+        </div>
+      } @else if (n.important) {
+        <div class="icon-box alert"><ion-icon name="warning-outline"></ion-icon></div>
+      } @else {
+        <div class="icon-box"><ion-icon name="home-outline"></ion-icon></div>
+      }
+
+      <div class="info">
+        <strong>{{ n.title }}</strong>
+        <span>{{ meta(n) }}</span>
+      </div>
+      <ion-icon class="edit" name="pencil-outline"></ion-icon>
+    </div>
+  } @empty {
+    <div class="empty-state">
+      You haven't posted anything yet.<br />
+      Tap "New notice" to post your first one.
+    </div>
+  }
+
+  <ion-fab slot="fixed" vertical="bottom" horizontal="end">
+    <button class="fab-btn" routerLink="/new">
+      <ion-icon name="add"></ion-icon>
+      New notice
+    </button>
+  </ion-fab>
+</ion-content>

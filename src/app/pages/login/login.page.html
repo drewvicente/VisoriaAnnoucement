@@ -1,0 +1,43 @@
+<ion-content [fullscreen]="true">
+  <div class="login">
+    <div class="hero">
+      <app-logo [size]="96" src="assets/Group 49.png"></app-logo>
+      <h1>{{ config.loginTitle }}</h1>
+      <p>
+        Only barangay officials can login.<br />
+        Residents can continue without signing in.
+      </p>
+    </div>
+
+    <form (ngSubmit)="signIn()">
+      <input
+        class="field"
+        name="username"
+        type="text"
+        placeholder="Username"
+        autocomplete="username"
+        [(ngModel)]="username"
+      />
+      <input
+        class="field"
+        name="password"
+        type="password"
+        placeholder="Password"
+        autocomplete="current-password"
+        [(ngModel)]="password"
+      />
+
+      @if (error()) {
+        <p class="error">{{ error() }}</p>
+      }
+
+      <button class="primary-btn" type="submit">Sign in</button>
+    </form>
+
+    <button class="link-btn" type="button" (click)="continueAsResident()">
+      Continue as resident
+    </button>
+
+    <footer>{{ config.footerText }}</footer>
+  </div>
+</ion-content>

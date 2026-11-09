@@ -1,0 +1,90 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar [class.blue-toolbar]="isEdit" [class.plain-toolbar]="!isEdit">
+    <ion-buttons slot="start">
+      @if (isEdit) {
+        <ion-back-button defaultHref="/posts" text=""></ion-back-button>
+      } @else {
+        <ion-back-button defaultHref="/feed" icon="close" text=""></ion-back-button>
+      }
+    </ion-buttons>
+    <ion-title>{{ isEdit ? 'Edit notice' : 'New notice' }}</ion-title>
+    @if (!isEdit) {
+      <ion-buttons slot="end">
+        <button class="post-btn" [disabled]="!title.trim()" (click)="save()">Post</button>
+      </ion-buttons>
+    }
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="panel">
+    <div class="poster">
+      <app-logo [size]="44"></app-logo>
+      <div>
+        <strong>{{ config.fullName }}</strong>
+        <span>Admin · Public</span>
+      </div>
+    </div>
+
+    <input class="title-input" type="text" placeholder="Notice title" [(ngModel)]="title" maxlength="80" />
+    <textarea class="body-input" rows="4" placeholder="What should residents know?" [(ngModel)]="body"></textarea>
+  </div>
+
+  <div class="panel">
+    <p class="label">Tag</p>
+    <div class="chips">
+      @for (t of tagOptions(); track t) {
+        <button class="chip" [class.active]="t === tag()" (click)="pickTag(t)">{{ t }}</button>
+      }
+      <button class="chip custom" [class.open]="customOpen()" (click)="toggleCustom()">+ Custom</button>
+    </div>
+    @if (customOpen()) {
+      <input
+        class="custom-input"
+        type="text"
+        placeholder="Custom tag, for example Lost pet"
+        maxlength="20"
+        [(ngModel)]="customTag"
+        (ngModelChange)="onCustomTag($event)"
+      />
+    }
+  </div>
+
+  <div class="panel rows">
+    <div class="row">
+      <ion-icon name="warning-outline"></ion-icon>
+      <span class="grow">Mark as important</span>
+      <ion-toggle color="danger" [(ngModel)]="important"></ion-toggle>
+    </div>
+
+    <div class="row">
+      <ion-icon name="calendar-outline"></ion-icon>
+      <div class="grow">
+        <small>Date and time (optional)</small>
+        <input type="datetime-local" [(ngModel)]="eventDate" />
+      </div>
+      @if (eventDate) {
+        <button class="clear-btn" (click)="clearDate()">Clear</button>
+      }
+    </div>
+
+    <div class="row">
+      <ion-icon name="location-outline"></ion-icon>
+      <div class="grow">
+        <small>Location (optional)</small>
+        <input type="text" placeholder="Add location" [(ngModel)]="location" maxlength="60" />
+      </div>
+    </div>
+  </div>
+
+  @if (tag() === 'Event' && !eventDate) {
+    <p class="note">Add a date so residents can set a reminder for this event.</p>
+  }
+
+  @if (isEdit) {
+    <div class="actions">
+      <button class="save-btn" (click)="save()">Save changes</button>
+      <button class="delete-btn" (click)="confirmDelete()">Delete notice</button>
+    </div>
+  }
+</ion-content>

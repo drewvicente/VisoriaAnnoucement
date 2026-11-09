@@ -1,0 +1,26 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar class="blue-toolbar">
+    <ion-title>Reminders</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  @for (r of reminders.list(); track r.noticeId) {
+    <div class="item">
+      <div class="cal">
+        <span class="cal-month">{{ r.eventDate | date: 'MMM' }}</span>
+        <span class="cal-day">{{ r.eventDate | date: 'dd' }}</span>
+      </div>
+      <div class="info" [routerLink]="['/notice', r.noticeId]">
+        <strong>{{ r.title }}</strong>
+        <span>Reminds you {{ r.remindAt | date: 'MMM d · h:mm a' }}</span>
+      </div>
+      <button class="cancel-btn" (click)="cancel(r.noticeId)">Cancel</button>
+    </div>
+  } @empty {
+    <div class="empty-state">
+      No reminders yet.<br />
+      Open an event notice and tap "Remind me 1 hour before".
+    </div>
+  }
+</ion-content>
